@@ -1,6 +1,7 @@
 import scrapy 
 import re
-#need to figure out exactly how the items file helps, should it be used for this?
+from CafeNervosa.items import SeasonItems
+#need to figure out exactly how the pipeline module works
 #the next big step is going to be going to the individual episode's page and scraping the description
 class EpisodeInformation(scrapy.Spider):
 	name = 'episodes'
@@ -27,23 +28,12 @@ class EpisodeInformation(scrapy.Spider):
 			return clean_text
 			
 		#gets the number for the season label
-		def ep_number(title):
+		def sn_number(title):
 			title_string = str(response.xpath(title).extract())
 			return re.sub('\D','',title_string)
 			
 			
-		
-		yield {
+		Items = SeasonItems(SeasonNumber=('Episodes for Season ' + sn_number('head/title/text()')), EpisodeList=clean_up("//td[@class='epguide_Title']/a/text()"))
+		return Items
 
-			
-			('Episodes for Season: ' + ep_number('head/title/text()')) : clean_up("//td[@class='epguide_Title']/a/text()"),
-			
-
-		}
-		
-		
-
-
-			
-		
 
